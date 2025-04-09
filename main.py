@@ -39,6 +39,10 @@ def main():
             if asteroid.collides(player):
                 print("Game over!")
                 return
+            for shot in shots:
+                if asteroid.collides(shot):
+                    asteroid.kill()
+                    shot.kill()
 
         screen.fill("black")  # Clear screen before drawing
         for pla in drawable:

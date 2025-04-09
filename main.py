@@ -31,6 +31,11 @@ def main():
         
         for pla in updatable:
             pla.update(dt)  # Update game state first
+        
+        for asteroid in asteroids:
+            if asteroid.collides(player):
+                print("Game over!")
+                return
 
         screen.fill("black")  # Clear screen before drawing
         for pla in drawable:

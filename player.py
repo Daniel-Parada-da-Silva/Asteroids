@@ -31,6 +31,16 @@ class Player(CircleShape):
         right = pygame.Vector2(0, 1).rotate(self.rotation + 90)
         self.position += right * PLAYER_SPEED * 0.75 * dt
     
+    def absolute_move(self, dt, direction):
+        directions = {
+            0: pygame.Vector2(0, -1),  # Up
+            1: pygame.Vector2(1, 0),   # Right
+            2: pygame.Vector2(0, 1),   # Down
+            3: pygame.Vector2(-1, 0)   # Left
+        }
+        move_vector = directions.get(direction, pygame.Vector2(0, 0))
+        self.position += move_vector * PLAYER_SPEED * dt
+    
     def shoot(self):
         if self.cd <= 0:
             shot = Shot(self.position.x, self.position.y)
@@ -42,17 +52,34 @@ class Player(CircleShape):
         self.cd -= dt
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+        # Rotation controls
+        if keys[pygame.K_a]:
             self.rotate(dt)
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+        if keys[pygame.K_d]:
             self.rotate(-dt)
-        if keys[pygame.K_w] or keys[pygame.K_UP]:
+        
+        # Relative movement (WASD)
+        if keys[pygame.K_w]:
             self.move(dt)
-        if keys[pygame.K_s] or keys[pygame.K_DOWN]:
+        if keys[pygame.K_s]:
             self.move(-dt)
+        
+        # Lateral movement
         if keys[pygame.K_q]:
             self.lateral_move(dt)
         if keys[pygame.K_e]:
             self.lateral_move(-dt)
+        
+        # Absolute movement with arrow keys
+        if keys[pygame.K_UP]:
+            self.absolute_move(dt, 0)  # Up
+        if keys[pygame.K_RIGHT]:
+            self.absolute_move(dt, 1)  # Right
+        if keys[pygame.K_DOWN]:
+            self.absolute_move(dt, 2)  # Down
+        if keys[pygame.K_LEFT]:
+            self.absolute_move(dt, 3)  # Left
+        
+        # Shooting
         if keys[pygame.K_SPACE]:
             self.shoot()
